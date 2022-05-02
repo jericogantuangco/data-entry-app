@@ -45,6 +45,12 @@ ttk.Combobox(
     textvariable=variables['Time'], value=time_values
 ).grid(row=1, column=1, stick=(tk.W + tk.E))
 
+variables['Technician'] = tk.StringVar()
+ttk.Label(r_info, text='Technician').grid(row=0, column=2)
+ttk.Entry(
+    r_info, textvariable=variables['Technician']
+).grid(row=1, column=2, sticky=(tk.W + tk.E))
+
 variables['Lab'] = tk.StringVar()
 ttk.Label(r_info, text='Lab').grid(row=2, column=0)
 labframe = ttk.Frame(r_info)
@@ -179,4 +185,38 @@ def on_reset():
 
 reset_button.configure(command=on_reset)
 
+
+def on_save():
+    '''Handle ave button clicks'''
+    global records_saved
+    datestring = datetime.today().strftime("%Y-%m-%d")
+    filename = f"abq_data_record_{datestring}.csv"
+    newfile = not Path(filename).exists()
+    data = dict()
+    fault = variables['Equipment Fault'].get()
+    for key, variable in variables.items():
+        if fault and key in ('Light', 'Humidity', 'Temperature'):
+            data[key] = ''
+        else:
+            try:
+                data[key] = variable.get()
+            except tk.TclError:
+                status_variable.set(
+                    f'Error in field: {key}. Data was not saved!'
+                )
+                return
+    data['Notes'] = notes_inp.get('1.0', tk.END)
+    with open(filename, 'a', newline='') as fh:
+        csvwriter = csv.DictWriter(fh, fieldnames=data.keys())
+        if newfile:
+            csvwriter.writeheader()
+        csvwriter.writerow(data)
+    records_saved += 1
+    status_variable.set(
+        f"{records_saved} records saved this session"
+    )
+    on_reset()
+
+save_button.configure(command=on_save)
+on_reset()
 root.mainloop()
