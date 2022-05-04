@@ -1,10 +1,12 @@
 '''The ABQ Data Entry application'''
-from time import sleep
-import tkinter as tk
-from tkinter import ttk
 from datetime import datetime
 from pathlib import Path
 import csv
+import tkinter as tk
+from tkinter import ttk
+
+class BoundText(tk.Text):
+    """A Text widget with a bound variable"""
 
 
 variables = dict()
@@ -175,7 +177,7 @@ ttk.Label(
 
 
 def on_reset():
-    '''Called when reset button is clicked, or after save'''
+    """Called when reset button is clicked, or after save"""
     for variable in variables.values():
         if isinstance(variable, tk.BooleanVar):
             variable.set(False)
