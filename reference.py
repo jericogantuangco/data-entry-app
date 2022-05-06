@@ -160,7 +160,7 @@ notes_inp = tk.Text(drf, width=75, height=10)
 notes_inp.grid(sticky=(tk.W + tk.E))
 
 buttons = tk.Frame(drf)
-buttons.grid(stick=tk.W + tk.E)
+buttons.grid(sticky=tk.W + tk.E)
 save_button = ttk.Button(buttons, text='Save')
 save_button.pack(side=tk.RIGHT)
 
